@@ -5,10 +5,10 @@ def find_duplicate_frequency(input_file):
 		changes = f.read().strip().split()
 
 	frequency = 0
-	frequency_list = [0,]
+	seen = {0}
 
 	duplicate_found = False
-	
+
 	while not duplicate_found:
 		for change in changes:
 			if change[0] == "+":
@@ -16,13 +16,11 @@ def find_duplicate_frequency(input_file):
 			else:
 				frequency -= int(change[1:])
 
-			if frequency in frequency_list:
+			if frequency in seen:
 				duplicate_found = True
-				break;
+				break
 			else:
-				frequency_list.append(frequency)
-
-			print("running", len(frequency_list))
+				seen.add(frequency)
 
 	return frequency
 
