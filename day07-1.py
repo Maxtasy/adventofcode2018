@@ -4,18 +4,14 @@ def part1(input_file):
 	with open(input_file, "r") as f:
 		lines = f.read().strip().split("\n")
 
-	switches = {}
-	default_on = ["E", "P", "X"]
+	switch_ids = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-	for default in default_on:
-		switches[default] = [0, []]
+	switches = {k: [0, []] for k in switch_ids}
 
 	for line in lines:
 		parts = line.split()
 		switch = parts[7]
 		dependency = parts[1]
-		if switch not in switches:
-			switches[switch] = [0,[]]
 		switches[switch][1].append(dependency)
 
 	order = ""

@@ -4,8 +4,6 @@ def react(input_file):
 	with open(input_file, "r") as f:
 		s = f.read().strip()
 
-	#s = "wNnJZzjXxlLrWwbBaARdaADWfmMZzFDdKCcQTCaActfEeFqkKkpxXdPpDPEejbBCcuqQUFfQqJMmNnLlJhHLmMvVRrCcRrFRrjyYJfyQqYYLlyJjljjNqQdOzZoDgGtTJjWwnBUubQYyVvjJqUpPe"
-
 	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	units = "abcdefghijklmnopqrstuvwxyz"
 
@@ -20,7 +18,6 @@ def react(input_file):
 		found = True
 
 		while found:
-			print(len(s_test), unit)
 			found = False
 			for i in range(index, len(s_test) - 1):
 				if s_test[i] == alphabet[(alphabet.index(s_test[i + 1]) + 26) % 52]:

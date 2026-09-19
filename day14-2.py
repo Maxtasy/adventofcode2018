@@ -3,26 +3,32 @@
 
 def part2(input_file):
 	with open(input_file, "r") as f:
-		score_sequence = f.read()
+		score_sequence = f.read().strip()
 
-	pos1 = 0
-	pos2 = 1
+	target = [int(c) for c in score_sequence]
+	target_len = len(target)
 
-	recipes = "37"
+	recipes = [3, 7]
+	pos1, pos2 = 0, 1
 
-	# We make -7 because it might add 2 numbers at the end so we have to check a range of 7 instead of 6
-	while score_sequence not in recipes[-7:]:
-		new_recipe = str(int(recipes[pos1]) + int(recipes[pos2]))
+	def matches_at_end(offset):
+		end = len(recipes) - offset
+		return recipes[end - target_len:end] == target
 
-		recipes += new_recipe
+	while True:
+		total = recipes[pos1] + recipes[pos2]
 
-		move1 = 1 + int(recipes[pos1])
-		move2 = 1 + int(recipes[pos2])
+		if total >= 10:
+			recipes.append(total // 10)
+			if matches_at_end(0):
+				return len(recipes) - target_len
 
-		pos1 = (pos1 + move1) % len(recipes)
-		pos2 = (pos2 + move2) % len(recipes)
+		recipes.append(total % 10)
+		if matches_at_end(0):
+			return len(recipes) - target_len
 
-	return recipes.index(score_sequence)
+		pos1 = (pos1 + 1 + recipes[pos1]) % len(recipes)
+		pos2 = (pos2 + 1 + recipes[pos2]) % len(recipes)
 
 
 def main():

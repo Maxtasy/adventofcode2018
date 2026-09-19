@@ -1,8 +1,7 @@
 # https://adventofcode.com/2018/day/12
-# Needed solution
 
-import collections
-import re
+TARGET_GENERATION = 50_000_000_000
+
 
 def nextg(cur, recipe):
 	start = min(cur)
@@ -16,31 +15,44 @@ def nextg(cur, recipe):
 
 	return x
 
-def viz(cur):
-	print(''.join('#' if i in cur else '.' for i in range(-5, 120)))
 
-#with open('day12test.txt') as f:
-with open('day12-input.txt') as f:
-	lines = [l.rstrip('\n') for l in f]
-	print(lines)
+def part2(input_file):
+	with open(input_file) as f:
+		lines = [l.rstrip('\n') for l in f]
 
 	init = lines[0][len('initial state: '):]
 	recipe = set()
 	for l in lines[2:]:
-		if l[-1] == '#':  # I forgot this line the first time around.
-			recipe.add(l[:5]) 
+		if l[-1] == '#':
+			recipe.add(l[:5])
 
 	cur = set(i for i, c in enumerate(init) if c == '#')
 
-	# Part 2:
-	ls = 0
-	# viz(cur)
-	for i in range(2000):
-		cur = nextg(cur, recipe)
-		# viz(cur)
-		s = sum(cur)
-		print(i, s, s - ls)
-		ls = s
-	print(sum(cur))
+	last_sum = sum(cur)
+	last_delta = None
+	generation = 0
 
-#answer: printed value + (50,000,000,000 - 2000) * 62
+	# Run until the sum-of-pot-numbers delta between generations stabilizes
+	# (two consecutive equal deltas), then extrapolate linearly to the target.
+	while generation < TARGET_GENERATION:
+		cur = nextg(cur, recipe)
+		generation += 1
+		current_sum = sum(cur)
+		delta = current_sum - last_sum
+		last_sum = current_sum
+
+		if delta == last_delta:
+			return current_sum + (TARGET_GENERATION - generation) * delta
+
+		last_delta = delta
+
+	return last_sum
+
+
+def main():
+	input_file = "day12-input.txt"
+	print(part2(input_file))
+
+
+if __name__ == "__main__":
+	main()

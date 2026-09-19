@@ -3,8 +3,7 @@
 from collections import deque
 
 def part2(n_players, n_marbles):
-	n_players = 476
-	n_marbles = 7143100
+	n_marbles *= 100
 	circle = deque([0])
 	scores = [0] * n_players
 	current_player = 0

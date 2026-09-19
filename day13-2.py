@@ -7,7 +7,10 @@ from itertools import product
 def part2(input_file):	
 	with open(input_file, 'r') as f:
 		rlmap = [list(line.strip('\n')) for line in f]
-		
+
+	max_len = max(len(line) for line in rlmap)
+	rlmap = [line + [' '] * (max_len - len(line)) for line in rlmap]
+
 	carts = []
 
 	for y, x in product(range(len(rlmap)), range(len(rlmap[0]))):

@@ -5,6 +5,9 @@ def part1(input_file):
 	with open(input_file, "r") as f:
 		lines = f.read().strip("\n").split("\n")
 
+	max_len = max(len(line) for line in lines)
+	lines = [line.ljust(max_len) for line in lines]
+
 	dirs = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 	next_turn = [-1, 0, 1]
 
@@ -35,17 +38,17 @@ def part1(input_file):
 	while True:
 		carts.sort()
 
-		cart_positions = []
+		cart_positions = set(cart[0] for cart in carts)
 
 		for cart in carts:
-			cart_positions.append(cart[0])
-
-		for cart in carts:
+			cart_positions.remove(cart[0])
 			cart[0] = (cart[0][0] + cart[1][0], cart[0][1] + cart[1][1])
 
 			if cart[0] in cart_positions:
 				return str(cart[0][1]) + "," + str(cart[0][0])
-			elif tracks[cart[0]] == "+":
+			cart_positions.add(cart[0])
+
+			if tracks[cart[0]] == "+":
 				cart[1] = dirs[(dirs.index(cart[1]) + cart[2]) % 4]
 				cart[2] = next_turn[(next_turn.index(cart[2]) + 1) % 3]
 			elif tracks[cart[0]] == "\\":

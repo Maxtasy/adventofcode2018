@@ -1,6 +1,6 @@
 # https://adventofcode.com/2018/day/10
 
-def part1(input_file):
+def parse_points(input_file):
 	with open(input_file, "r") as f:
 		lines = f.read().strip().split("\n")
 
@@ -15,72 +15,32 @@ def part1(input_file):
 		y_vel = int(parts[3][:-1])
 		points.append([x, y, x_vel, y_vel])
 
-	# We start at 0 seconds
-	seconds = 0
-	smallest = None
+	return points
 
-	while seconds < 10391:
-		smallest_x = None
-		smallest_y = None
-		biggest_x = None
-		biggest_y = None
 
-		for point in points:
-			point[0] += point[2]
-			point[1] += point[3]
+def bbox_area(points, t):
+	xs = [p[0] + p[2] * t for p in points]
+	ys = [p[1] + p[3] * t for p in points]
+	return (max(xs) - min(xs)) * (max(ys) - min(ys))
 
-			# Find smallest x value (left side of rectangle)
-			if smallest_x == None:
-				smallest_x = point[0]
-			else:
-				smallest_x = min(smallest_x, point[0])
 
-			# Find smallest y value (bottom side of rectangle)
-			if smallest_y == None:
-				smallest_y = point[1]
-			else:
-				smallest_y = min(smallest_y, point[1])
+def find_convergence_second(points):
+	# The message is legible when the points' bounding box is smallest.
+	# Bounding box area shrinks then grows again, so scan until it starts increasing.
+	t = 0
+	while bbox_area(points, t + 1) < bbox_area(points, t):
+		t += 1
+	return t
 
-			# Find biggest x value (left side of rectangle)
-			if biggest_x == None:
-				biggest_x = point[0]
-			else:
-				biggest_x = max(biggest_x, point[0])
 
-			# Find biggest y value (left side of rectangle)
-			if biggest_y == None:
-				biggest_y = point[1]
-			else:
-				biggest_y = max(biggest_y, point[1])
-
-		# 1 second passed while all points moved to their new positions
-		seconds += 1
-
-	print("Code is shown at " + str(seconds) + " seconds.")
-
-	# Build matrix so we can draw all points
-	matrix = {}
-
-	for row in range(smallest_y, biggest_y + 1):
-		for col in range(smallest_x, biggest_x + 1):
-			matrix[(row, col)] = "."
-		matrix[(row, col + 1)] = "\n"
-	
-	for point in points:
-		matrix[(point[1], point[0])] = "#"
-
-	s = ""
-
-	for row in range(smallest_y, biggest_y + 1):
-		for col in range(smallest_x, biggest_x + 2):
-			s += matrix[(row, col)]
-
-	print(s)
+def part2(input_file):
+	points = parse_points(input_file)
+	return find_convergence_second(points)
 
 
 def main():
 	input_file = "day10-input.txt"
-	part1(input_file)
+	print(part2(input_file))
 
 if __name__ == "__main__":
 	main()
